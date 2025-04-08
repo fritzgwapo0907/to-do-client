@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 
 function App() {
   const navigate = useNavigate();
+  const apiUrl =  import.meta.env.VITE_ENDPOINT_URL;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showError, setShowError] = useState(false);
+  
 
   const handleLogin = async () => {
-    await axios.post(`${process.env.ENDPOINT_URL}check-user`, { username, password })
+    await axios.post(`${apiUrl}/check-user`, { username, password })
       .then((response) => {
         if (response.data.exist) {
           setShowError(false);

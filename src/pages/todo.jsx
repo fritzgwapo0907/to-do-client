@@ -5,6 +5,7 @@ import AddModal from '../components/add_modal';
 
 function Todo() {
     const [titles, setTitles] = useState([]);
+    const apiUrl =  import.meta.env.VITE_ENDPOINT_URL;
     const [showModal, setShowModal] = useState(false);
     const [selectedTitle, setSelectedTitle] = useState(null);
     const [titleLists, setTitleLists] = useState([]);
@@ -29,7 +30,7 @@ function Todo() {
 
     const getTitles = async () => {
         try {
-            const response = await axios.get(`${process.env.ENDPOINT_URL}/get-titles`);
+            const response = await axios.get(`${apiUrl}/get-titles`);
             const allTitles = response.data.titles;
 
             const storedDoneTitles = JSON.parse(localStorage.getItem('doneTitles')) || [];
@@ -45,7 +46,7 @@ function Todo() {
 
     const handleTitleClick = async (titleId) => {
         try {
-            const response = await axios.get(`${process.env.ENDPOINT_URL}/get-lists/${titleId}`);
+            const response = await axios.get(`${apiUrl}/get-lists/${titleId}`);
             const tasks = response.data.lists;
 
             // Retrieve saved task completion state from localStorage
@@ -82,7 +83,7 @@ function Todo() {
 
         try {
             // Update the task status in the database
-            await axios.put(`${process.env.ENDPOINT_URL}/update-task-status/${taskId}`, {
+            await axios.put(`${apiUrl}/update-task-status/${taskId}`, {
                 status: updatedTask.completed, // Send the new completed status
             });
             console.log('Task status updated in the database');
@@ -128,7 +129,7 @@ function Todo() {
     const handleDeleteTitle = async (titleId) => {
         try {
             // Delete the title from the database
-            await axios.post(`${process.env.ENDPOINT_URL}/delete-todo`, { title_id: titleId });
+            await axios.post(`${apiUrl}/delete-todo`, { title_id: titleId });
             console.log('Title deleted from the database');
             // Update the frontend state by removing the deleted title
             setTitles(titles.filter((title) => title.id !== titleId));
@@ -141,7 +142,7 @@ function Todo() {
     const handleEditTitle = async (titleId) => {
         try {
             // Make a PUT request to update the title
-            const response = await axios.put(`${process.env.ENDPOINT_URL}/edit-title/${titleId}`, {
+            const response = await axios.put(`${apiUrl}/edit-title/${titleId}`, {
                 title: editTitle, // Send the edited title
                 status: false, // You can adjust the status if needed (default to false)
             });
@@ -167,7 +168,7 @@ function Todo() {
 
     const handleDeleteTask = async (taskId) => {
         try {
-            await axios.post(`${process.env.ENDPOINT_URL}/delete-task`, { listIds: [taskId] }); // Send as an array
+            await axios.post(`${apiUrl}/delete-task`, { listIds: [taskId] }); // Send as an array
     
             console.log('Task deleted from the database');
     
@@ -192,7 +193,7 @@ function Todo() {
     
     const handleUpdateTask = async (taskId) => {
         try {
-            await axios.post(`${process.env.ENDPOINT_URL}/update-task`, { task_id: taskId, new_desc: editedTaskDesc });
+            await axios.post(`${apiUrl}/update-task`, { task_id: taskId, new_desc: editedTaskDesc });
     
             // Update local state
             setTitleLists((prevLists) =>
