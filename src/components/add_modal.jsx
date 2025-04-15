@@ -43,7 +43,7 @@ export default function AddModal({ hide, onTaskAdded }) {
         };
     
         try {
-            const response = await fetch("http://localhost:3000/add-to-do", { 
+            const response = await fetch(`${apiUrl}/add-to-do`, { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
