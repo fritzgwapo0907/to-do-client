@@ -247,16 +247,17 @@ function Todo() {
     
     
 
-     return (
-        <div className="min-h-screen bg-gradient-to-r from-gray-800 to-black text-white p-8">
+    return (
+        <div className="min-h-screen bg-gradient-to-r from-gray-800 to-black text-white p-4 md:p-8">
             <div className="container mx-auto">
                 <header className="text-center mb-8">
-                    <h1 className="text-4xl font-semibold text-gray-300">To Do List</h1>
+                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-300">To Do List</h1>
                 </header>
-
-                {/* Ongoing Tasks */}
-                <div className="flex justify-between mb-8">
-                    <div className="w-1/2 mr-4">
+    
+                {/* Ongoing and Done Titles */}
+                <div className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0 mb-8">
+                    {/* Ongoing Titles */}
+                    <div className="w-full md:w-1/2">
                         <h2 className="text-2xl font-semibold mb-4 text-gray-300">Ongoing</h2>
                         <div className="bg-gray-900 p-4 rounded-lg shadow-lg">
                             {titles.length === 0 ? (
@@ -265,7 +266,7 @@ function Todo() {
                                 titles.map((title) => (
                                     <div
                                         key={title.id}
-                                        className="mb-2 p-3 bg-gray-800 rounded-md flex justify-between cursor-pointer"
+                                        className="mb-2 p-3 bg-gray-800 rounded-md flex flex-col sm:flex-row justify-between gap-2 cursor-pointer"
                                         onClick={() => handleTitleClick(title.id)}
                                     >
                                         {editingTitleId === title.id ? (
@@ -273,54 +274,54 @@ function Todo() {
                                                 type="text"
                                                 value={editTitle}
                                                 onChange={(e) => setEditTitle(e.target.value)}
-                                                className="text-white bg-gray-700 rounded-md p-2"
+                                                className="text-white bg-gray-700 rounded-md p-2 w-full sm:w-auto"
                                             />
                                         ) : (
                                             <span>{title.title}</span>
                                         )}
-
-                                        <button
-                                            onClick={() => {
-                                                setEditingTitleId(title.id);
-                                                setEditTitle(title.title);
-                                            }}
-                                            className="ml-2 text-blue-500 hover:text-blue-400"
-                                        >
-                                            Edit
-                                        </button>
-
-                                        {editingTitleId === title.id && (
+    
+                                        <div className="flex flex-wrap gap-2">
                                             <button
-                                                onClick={() => handleEditTitle(title.id)}
-                                                className="ml-2 text-green-500 hover:text-green-400"
+                                                onClick={() => {
+                                                    setEditingTitleId(title.id);
+                                                    setEditTitle(title.title);
+                                                }}
+                                                className="text-blue-500 hover:text-blue-400"
                                             >
-                                                Save
+                                                Edit
                                             </button>
-                                        )}
-
-                                        <button
-                                            onClick={() => handleDeleteTitle(title.id)}
-                                            className="ml-2 text-red-500 hover:text-red-400"
-                                        >
-                                            Delete
-                                        </button>
+    
+                                            {editingTitleId === title.id && (
+                                                <button
+                                                    onClick={() => handleEditTitle(title.id)}
+                                                    className="text-green-500 hover:text-green-400"
+                                                >
+                                                    Save
+                                                </button>
+                                            )}
+    
+                                            <button
+                                                onClick={() => handleDeleteTitle(title.id)}
+                                                className="text-red-500 hover:text-red-400"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 ))
                             )}
                         </div>
                     </div>
-
-                    
-
+    
                     {/* Done Titles */}
-                    <div className="w-1/2 ml-4">
+                    <div className="w-full md:w-1/2">
                         <h2 className="text-2xl font-semibold mb-4 text-gray-300">Done</h2>
                         <div className="bg-gray-900 p-4 rounded-lg shadow-lg">
                             {doneActivities.length === 0 ? (
                                 <p className="text-gray-500">No activities completed</p>
                             ) : (
                                 doneActivities.map((task) => (
-                                    <div key={task.id} className="mb-2 p-3 bg-gray-800 rounded-md flex justify-between">
+                                    <div key={task.id} className="mb-2 p-3 bg-gray-800 rounded-md">
                                         {task.title}
                                     </div>
                                 ))
@@ -328,101 +329,96 @@ function Todo() {
                         </div>
                     </div>
                 </div>
-
+    
                 {showModal && <AddModal hide={() => setShowModal(false)} onTaskAdded={getTitles} />}
+    
+                {/* Add Task Button */}
                 <div className="mt-8 text-center">
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="py-3 px-8 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition duration-300"
+                    >
+                        Add New Task
+                    </button>
+                </div>
+    
+                {/* Tasks for Selected Title */}
+                {selectedTitle && (
+                    <div className="mt-8">
+                        <h2 className="text-2xl font-semibold mb-4 text-gray-300">
+                            Tasks for: {selectedTitle.title}
+                        </h2>
+                        <div className="bg-gray-900 p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
+                            {/* New Task Input */}
+                            <div className="mb-4 flex flex-col sm:flex-row gap-2">
+                                <input
+                                    type="text"
+                                    value={newTaskDesc}
+                                    onChange={(e) => setNewTaskDesc(e.target.value)}
+                                    placeholder="Enter new task..."
+                                    className="flex-1 bg-gray-700 text-white p-2 rounded-md"
+                                />
                                 <button
-                                    onClick={() => setShowModal(true)}
-                                    className="py-3 px-8 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition duration-300"
+                                    onClick={handleAddTask}
+                                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-500"
                                 >
-                                    Add New Task
+                                    Add
                                 </button>
                             </div>
-                            
-
-                {selectedTitle && (
-    <div className="mt-8">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-300">
-            Tasks for: {selectedTitle.title}
-        </h2>
-        <div className="bg-gray-900 p-4 rounded-lg shadow-lg w-[760px]">
-
-            {/* Task Input for Adding a New Task */}
-            <div className="mb-4 flex">
-            <input
-                    type="text"
-                    value={newTaskDesc}
-                    onChange={(e) => setNewTaskDesc(e.target.value)}
-                    placeholder="Enter new task..."
-                    className="flex-1 bg-gray-700 text-white p-2 rounded-md"
-                />
-                <button
-                    onClick={handleAddTask}
-                    className="ml-2 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-500"
-                >
-                    Add
-                </button>
-            </div>
-
-            {/* Display Existing Tasks */}
-            {titleLists.map((task) => (
-                <div
-                    key={task.id}
-                    className="mb-2 py-2 px-6 bg-gray-800 rounded-md flex items-center justify-between"
-                >
-                    {/* Task Description Input for Editing */}
-                    {editingTaskId === task.id ? (
-                        <input
-                            type="text"
-                            value={editedTaskDesc}
-                            onChange={(e) => setEditedTaskDesc(e.target.value)}
-                            className="flex-1 bg-gray-700 text-white p-2 rounded-md"
-                        />
-                    ) : (
-                        <p className="flex-1">{task.list_desc}</p>
-                    )}
-
-                    {/* Checkbox */}
-                    <input
-                        type="checkbox"
-                        checked={task.completed || false}
-                        onChange={() => handleCheckboxChange(task.id)}
-                        className="mr-4"
-                    />
-
-                    {/* Edit Button */}
-                    {editingTaskId === task.id ? (
-                        <button
-                            onClick={() => handleUpdateTask(task.id)}
-                            className="text-green-500 hover:text-green-400 mr-2"
-                        >
-                            Save
-                        </button>
-                    ) : (
-                        <button
-                            onClick={() => startEditing(task.id, task.list_desc)}
-                            className="text-blue-500 hover:text-blue-400 mr-2"
-                        >
-                            Edit
-                        </button>
-                    )}
-
-                    {/* Delete Button */}
-                    <button
-                        onClick={() => handleDeleteTask(task.id)}
-                        className="text-red-500 hover:text-red-400"
-                    >
-                        Delete
-        </button>
-    </div>
-))}
-                            {showModal && <AddModal hide={() => setShowModal(false)} onTaskAdded={getTitles} />}
+    
+                            {/* Existing Tasks */}
+                            {titleLists.map((task) => (
+                                <div
+                                    key={task.id}
+                                    className="mb-2 py-2 px-4 bg-gray-800 rounded-md flex flex-col sm:flex-row items-center justify-between gap-2"
+                                >
+                                    {editingTaskId === task.id ? (
+                                        <input
+                                            type="text"
+                                            value={editedTaskDesc}
+                                            onChange={(e) => setEditedTaskDesc(e.target.value)}
+                                            className="flex-1 bg-gray-700 text-white p-2 rounded-md"
+                                        />
+                                    ) : (
+                                        <p className="flex-1">{task.list_desc}</p>
+                                    )}
+    
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={task.completed || false}
+                                            onChange={() => handleCheckboxChange(task.id)}
+                                        />
+                                        {editingTaskId === task.id ? (
+                                            <button
+                                                onClick={() => handleUpdateTask(task.id)}
+                                                className="text-green-500 hover:text-green-400"
+                                            >
+                                                Save
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => startEditing(task.id, task.list_desc)}
+                                                className="text-blue-500 hover:text-blue-400"
+                                            >
+                                                Edit
+                                            </button>
+                                        )}
+                                        <button
+                                            onClick={() => handleDeleteTask(task.id)}
+                                            className="text-red-500 hover:text-red-400"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}
             </div>
         </div>
     );
-};
+};    
 
 export default Todo;
