@@ -221,7 +221,7 @@ function Todo() {
         }
 
         try {
-            const response = await fetch(`${apiUrl}3000/add-task`, {
+            const response = await fetch(`${apiUrl}/add-task`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
