@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function AddModal({ hide, onTaskAdded }) {
+    const apiUrl =  import.meta.env.VITE_ENDPOINT_URL;
     const { state } = useLocation();  // Get the username from location state
     const [title, setTitle] = useState('');
     const [tasks, setTasks] = useState(['']);
